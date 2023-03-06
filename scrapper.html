@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCSCBT SCRAPPING</title>
+    <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="dist/css/font-open-sans.css">
+    <link rel="stylesheet" href="plugins/pace-progress/themes/black/pace-theme-minimal.css">
+    <script src="plugins/jquery/jquery.min.js"></script>
+</head>
+
+<body class="hold-transition sidebar-collapse layout-top-nav">
+    <div class="wrapper">
+
+        <div class="content-wrapper">
+
+            <div class="content-header">
+                <div class="container">
+                    <div class="row mb-2">
+                        <div class="col-sm-12">
+                            <h1 class="m-0">AUTO ANSWER <small>OCSCBT</small></h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="content">
+                <div class="container soal-container">
+
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <aside class="control-sidebar control-sidebar-dark">
+
+        </aside>
+
+
+        <footer class="main-footer">
+
+            <div class="float-right d-none d-sm-inline">
+                Anything you want
+            </div>
+
+            <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+        </footer>
+    </div>
+
+
+    <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="dist/js/adminlte.min.js"></script>
+    <script src="plugins/lazysizes/lazysizes.min.js"></script>
+    <script src="plugins/moment/moment-with-locales.min.js"></script>
+    <script data-pace-options="{ &quot;ajax&quot;: false }" src="plugins/pace-progress/pace.min.js"></script>
+    <script>
+        var url = "http://110.232.91.180/ocscbt?dum=SjV4U0p3MDNKaTlxUjkyTERjK2NEQT09";
+        var idnilai = "dFJ4YlYvU1piNm9lYUhKcEt0alJ2dz09";
+        var jumlahSoal = 30;
+        var answers = [];
+        var response;
+
+        function showsoal(posisi, recursive) {
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {
+                    act: 'UXFqU1I2djFWNHVsc2ZIRC9nVklLVUN2Qm02eWRMWWo1c3RTS2pFN3Q5WT0=',
+                    d1: idnilai,
+                    d2: posisi,
+                    d3: jumlahSoal,
+                },
+                success: function(data) {
+                    posisi++;
+                    let container = $('.soal-container');
+                    let id = "soal-" + posisi;
+                    let soalContainer = $("#" + id);
+
+                    if (soalContainer.length == 0) {
+                        soalContainer = $("<div id='" + id + "'></div>");
+                        container.append(soalContainer);
+                    }
+                    soalContainer.html(data);
+
+                    // get jawaban
+                    let answersInput = container.find("#" + id + " .icheck-indigo input");
+                    const str = answersInput.first().attr("onclick");
+                    const regex = /'([^']*)'/;
+                    const match = str.match(regex);
+                    const result = match[1];
+                    if (answers.length < posisi) answers.push(result);
+
+                    for (let i = 0; i < answersInput.length; i++) {
+                        let element = $(answersInput[i]);
+                        element.attr('name', element.attr('name') + "-" + posisi);
+
+                    }
+
+                    if (posisi <= jumlahSoal && recursive) {
+                        showsoal(posisi, true);
+                    }
+                }
+            });
+        }
+
+        function savejawaban(posisi, jawaban, recursive) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {
+                    act: 'a3VCZGFsbDNBeG9va2E4azBoNitkWjlNNzZjS3BoQlhUTDJUQUt4VnBKOD0=',
+                    d1: answers[posisi - 1],
+                    d2: jawaban
+                },
+                success: function(data) {
+                    posisi++;
+                    if (recursive && posisi <= jumlahSoal) savejawaban(posisi, "A", true);
+                },
+            });
+        }
+
+        function rekapjawaban() {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {
+                    act: 'OWJMQWcvcGJ4QnZOdVJjNmNJMUtXTnMwTUlGWGJsMTBpZzVXbVZZOWQrRT0=',
+                    d1: idnilai,
+                    d2: jumlahSoal
+                },
+                success: function(data) {
+                    console.log(data);
+                }
+            });
+        }
+
+        $(() => {
+            showsoal(1, true);
+        });
+    </script>
+</body>
+
+</html>

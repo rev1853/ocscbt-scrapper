@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        var url = "?dum=SjV4U0p3MDNKaTlxUjkyTERjK2NEQT09";
+        var idpeserta = "SEd1eTNQbG5kNFJmdSs2Z1NBS2tBQT09";
+
+        $(function() {
+            setInterval(showdata, 60000);
+        });
+
+        function showdata() {
+            $("#pover").show();
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {
+                    act: 'TktkRUxoRG1IVFV1dTI3MWhzUXpDZz09',
+                    d1: idpeserta
+                },
+                success: function(data) {
+                    $('#dataujian').html(data);
+                    $("#pover").hide();
+                }
+            });
+        }
+
+        function ikutiujian(idkoreksi) {
+            window.location.replace("?dum=SkJIV1JWRnY2aFluNUhmNGc4M0JBdz09&lp=TzZPbUQwWldwS1l3cWdRZmZReGUrQT09&i=" + idkoreksi);
+        }
+    </script>
+</body>
+
+</html>

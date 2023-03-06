@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        let unknownVariable = "http://110.232.91.180/ocscbt/?dum=SkJIV1JWRnY2aFluNUhmNGc4M0JBdz09&lp=LzRBUDBiK2J3OHhST0VLMlFmRFVmdz09&i=T3I1aDVwQStwcXpSY1hZU2dXQkJDZz09";
+        var url = "?dum=SjV4U0p3MDNKaTlxUjkyTERjK2NEQT09";
+
+        $(function() {
+            $("body").addClass("sidebar-collapse");
+
+            showsoal('YlhzUTdhMjg3Q0gzNzNsb2VpZVBjdz09', '1', '30');
+
+            let detik = $('#sisadetik').val();
+            let menit = $('#sisamenit').val();
+            let jam = $('#sisajam').val();
+            let hitung = function() {
+                setTimeout(hitung, 1000);
+                $('#tampilkan').html(((jam <= 9) ? ("0" + jam) : jam) + ' jam ' + ((menit <= 9) ? ("0" + menit) : menit) + ' menit ' + ((detik <= 9) ? ("0" + detik) : detik) + ' detik ');
+                detik--;
+                if (detik < 0) {
+                    detik = 59;
+                    menit--;
+                    if (menit < 0) {
+                        menit = 59;
+                        jam--;
+                        if (jam < 0) {
+                            jam = 0;
+                            menit = 0;
+                            detik = 0;
+                            clearInterval();
+                            clearTimeout(hitung);
+                            Toast.fire({
+                                icon: 'info',
+                                title: ' Waktu pengerjaan telah berakhir...!!!'
+                            });
+                            rekapjawaban();
+                        }
+                    }
+                }
+            }
+            hitung();
+
+            $(this).bind("contextmenu", function(e) {
+                return false;
+            });
+        });
+
+        function showsoal(idnilai, posisi, jumlah) {
+            $("#pover").show();
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {
+                    act: 'UXFqU1I2djFWNHVsc2ZIRC9nVklLVUN2Qm02eWRMWWo1c3RTS2pFN3Q5WT0=',
+                    d1: idnilai,
+                    d2: posisi,
+                    d3: jumlah
+                },
+                success: function(data) {
+                    $('#tmplokasisoal').html(data);
+                    pr_tombol($('#tnps').val());
+                    $("#pover").hide();
+                }
+            });
+        }
+
+        function pr_tombol(urutanke) {
+            let txtjwb = $('#galljwb').val();
+            let jmljwb = $('#gjmljwb').val();
+            let arrtxtjwb = txtjwb.split("| ");
+
+            if (urutanke == "1") {
+                $('#btn_first').attr("disabled", true);
+                $('#btn_prev').attr("disabled", true);
+                $('#btn_next').attr("disabled", false);
+                $('#btn_last').attr("disabled", false);
+                $('#btn_selesai_ujian_cbt').attr("disabled", true);
+            } else if (urutanke == '30') {
+                $('#btn_first').attr("disabled", false);
+                $('#btn_prev').attr("disabled", false);
+                $('#btn_next').attr("disabled", true);
+                $('#btn_last').attr("disabled", true);
+                if (parseInt(jmljwb) >= arrtxtjwb.length) {
+                    $('#btn_selesai_ujian_cbt').attr("disabled", false);
+                } else {
+                    $('#btn_selesai_ujian_cbt').attr("disabled", true);
+                }
+            } else {
+                $('#btn_first').attr("disabled", false);
+                $('#btn_prev').attr("disabled", false);
+                $('#btn_next').attr("disabled", false);
+                $('#btn_last').attr("disabled", false);
+                $('#btn_selesai_ujian_cbt').attr("disabled", true);
+            }
+
+            for (var t = 1; t <= arrtxtjwb.length; t++) {
+                if (t == urutanke) {
+                    $('#btn_no_soal_' + t).removeClass("btn-default");
+                    $('#btn_no_soal_' + t).removeClass("bg-indigo");
+                    $('#btn_no_soal_' + t).addClass("btn-danger");
+                    if (arrtxtjwb[t - 1] == "") {
+                        $('#nofityjawaban_' + t).html("");
+                    } else {
+                        if (arrtxtjwb[t - 1].length > 2) {
+                            $('#nofityjawaban_' + t).html('..');
+                        } else {
+                            $('#nofityjawaban_' + t).html((arrtxtjwb[t - 1]).substr((arrtxtjwb[t - 1]).length - 1).toUpperCase());
+                        }
+                    }
+                } else {
+                    if (arrtxtjwb[t - 1] == "") {
+                        $('#btn_no_soal_' + t).removeClass("btn-danger");
+                        $('#btn_no_soal_' + t).removeClass("bg-indigo");
+                        $('#btn_no_soal_' + t).addClass("btn-default");
+                        $('#nofityjawaban_' + t).html("");
+                    } else {
+                        $('#btn_no_soal_' + t).removeClass("btn-danger");
+                        $('#btn_no_soal_' + t).removeClass("btn-default");
+                        $('#btn_no_soal_' + t).addClass("bg-indigo");
+                        if (arrtxtjwb[t - 1].length > 2) {
+                            $('#nofityjawaban_' + t).html('..');
+                        } else {
+                            $('#nofityjawaban_' + t).html((arrtxtjwb[t - 1]).substr((arrtxtjwb[t - 1]).length - 1).toUpperCase());
+                        }
+                    }
+                }
+            }
+            $("body").removeClass("control-sidebar-slide-open");
+        }
+
+        function showgambar(files) {
+            $('#myModalPicture').modal('show');
+            document.getElementById('picturesoal').src = files;
+        }
+
+        function closePicture() {
+            $('#myModalPicture').modal('hide');
+        }
+
+        function savejawaban(idjawaban, jawaban, urutan, jumlah, idnilai) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {
+                    act: 'a3VCZGFsbDNBeG9va2E4azBoNitkWjlNNzZjS3BoQlhUTDJUQUt4VnBKOD0=',
+                    d1: idjawaban,
+                    d2: jawaban
+                },
+                success: function(data) {
+                    showsoal(idnilai, urutan, jumlah);
+                }
+            });
+        }
+
+        function rekapjawaban() {
+            let idnilai = 'YlhzUTdhMjg3Q0gzNzNsb2VpZVBjdz09';
+            let jmlsoal = '30';
+            $("#pover").show();
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {
+                    act: 'OWJMQWcvcGJ4QnZOdVJjNmNJMUtXTnMwTUlGWGJsMTBpZzVXbVZZOWQrRT0=',
+                    d1: idnilai,
+                    d2: jmlsoal
+                },
+                success: function(data) {
+                    Toast.fire({
+                        icon: 'success',
+                        title: ' Terima kasih telah mengikuti ujian online...!!!'
+                    });
+                    window.location.replace("?dum=SE1IdGxBTlVrMUk2U2F2V3cyaVAydz09");
+                    $("#pover").hide();
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
