@@ -47,7 +47,7 @@
             "ekwwUjV6Tk5IM0N6WFY2TGQzYmp1dz09",
         ]
         var jumlahSoal = 30;
-        $(function() {
+        $(function () {
             $("body").addClass("sidebar-collapse");
 
             showsoal('ekwwUjV6Tk5IM0N6WFY2TGQzYmp1dz09', '1', '30');
@@ -55,7 +55,7 @@
             let detik = $('#sisadetik').val();
             let menit = $('#sisamenit').val();
             let jam = $('#sisajam').val();
-            let hitung = function() {
+            let hitung = function () {
                 setTimeout(hitung, 1000);
                 $('#tampilkan').html(((jam <= 9) ? ("0" + jam) : jam) + ' jam ' + ((menit <= 9) ? ("0" + menit) : menit) + ' menit ' + ((detik <= 9) ? ("0" + detik) : detik) + ' detik ');
                 detik--;
@@ -82,7 +82,7 @@
             }
             hitung();
 
-            $(this).bind("contextmenu", function(e) {
+            $(this).bind("contextmenu", function (e) {
                 return false;
             });
         });
@@ -98,7 +98,7 @@
                     d2: posisi,
                     d3: jumlah
                 },
-                success: function(data) {
+                success: function (data) {
                     $('#tmplokasisoal').html(data);
                     pr_tombol($('#tnps').val());
                     $("#pover").hide();
@@ -188,7 +188,7 @@
                     d1: idjawaban,
                     d2: jawaban
                 },
-                success: function(data) {
+                success: function (data) {
                     showsoal(idnilai, urutan, jumlah);
                 }
             });
@@ -206,7 +206,7 @@
                     d1: idnilai,
                     d2: jmlsoal
                 },
-                success: function(data) {
+                success: function (data) {
                     Toast.fire({
                         icon: 'success',
                         title: ' Terima kasih telah mengikuti ujian online...!!!'

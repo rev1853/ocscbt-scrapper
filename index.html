@@ -5,15 +5,33 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OCSCBT SCRAPPING</title>
+    <title>OCSCBT SCRAPING</title>
     <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="dist/css/adminlte.min.css">
     <link rel="stylesheet" href="dist/css/font-open-sans.css">
     <link rel="stylesheet" href="plugins/pace-progress/themes/black/pace-theme-minimal.css">
     <script src="plugins/jquery/jquery.min.js"></script>
+
+    <style>
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+        }
+
+        .overlay.hide {
+            display: none !important;
+        }
+    </style>
 </head>
 
 <body class="hold-transition sidebar-collapse layout-top-nav">
+
+
     <div class="wrapper">
 
         <div class="content-wrapper">
@@ -29,30 +47,82 @@
             </div>
 
 
-            <div class="content">
+            <div class="content position-relative">
+                <div id="loading-overlay" class="overlay d-flex align-items-center hide">
+                    <div class="text-light text-center mx-auto" role="status">
+                        <span class="text-light">Loading...</span>
+                    </div>
+                </div>
                 <div class="container soal-container">
+                    <div id="form-soal" class="card card-green">
+                        <div class="card-header">
+                            <h3 class="card-title">Form Soal</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="tokendum">Token <code>DUM</code></label>
+                                <input class="form-control" id="tokendum" placeholder="Masukkan token">
+                            </div>
+                            <div class="form-group">
+                                <label for="tokenpenilaian">Token <code>Penilaian</code></label>
+                                <input class="form-control" id="tokenpenilaian" placeholder="Masukkan token">
+                            </div>
+                            <div class="form-group">
+                                <label for="jumlahsoal">Jumlah Soal</label>
+                                <input class="form-control" id="jumlahsoal" placeholder="Masukkan jumlah soal">
+                            </div>
+                        </div>
 
-
+                        <div class="card-footer">
+                            <button id="form-soal-button" type="button" class="btn btn-success">Submit</button>
+                        </div>
+                    </div>
+                    <div class="row"></div>
                 </div>
             </div>
 
         </div>
 
 
-        <aside class="control-sidebar control-sidebar-dark">
-
-        </aside>
-
-
         <footer class="main-footer">
 
             <div class="float-right d-none d-sm-inline">
-                Anything you want
+                Fine i'll do it myself
             </div>
 
-            <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights
-            reserved.
+            <strong>Copyright &copy; 2023 <a href="#">Revan Dev.</a>.</strong>
         </footer>
+    </div>
+
+    <div class="dump d-none">
+        <div class="question-card card card-primary card-outline col-12">
+            <div class="card-header">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h3 class="question-title card-title"></h3>
+                    <div class="card-tools">
+                        <div class="input-group input-group-sm m-0">
+                            <select class="question-answers input-group-sm form-control">
+                                <option>Pilih Jawaban</option>
+                                <option value="A">Jawaban A</option>
+                                <option value="B">Jawaban B</option>
+                                <option value="C">Jawaban C</option>
+                                <option value="D">Jawaban D</option>
+                                <option value="E">Jawaban E</option>
+                            </select>
+                            <span class="input-group-append">
+                                <button type="button" class="rekap-button btn btn-info btn-flat">Rekap</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="question-body overlay-wrapper">
+                    <div class="overlay hide"><i class="fas fa-3x fa-sync-alt fa-spin"></i></div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
 
@@ -63,36 +133,34 @@
     <script src="plugins/moment/moment-with-locales.min.js"></script>
     <script data-pace-options="{ &quot;ajax&quot;: false }" src="plugins/pace-progress/pace.min.js"></script>
     <script>
-        var url = "https://110.232.91.180/ocscbt?dum=SjV4U0p3MDNKaTlxUjkyTERjK2NEQT09";
-        var idnilai = "dFJ4YlYvU1piNm9lYUhKcEt0alJ2dz09";
-        var jumlahSoal = 30;
+        var url = "http://110.232.91.180/ocscbt";
+        var dum, idnilai, jumlahSoal;
         var answers = [];
-        var response;
 
         function showsoal(posisi, recursive) {
-            $.ajax({
-                type: "GET",
-                url: url,
-                data: {
-                    act: 'UXFqU1I2djFWNHVsc2ZIRC9nVklLVUN2Qm02eWRMWWo1c3RTS2pFN3Q5WT0=',
-                    d1: idnilai,
-                    d2: posisi,
-                    d3: jumlahSoal,
-                },
-                success: function (data) {
-                    posisi++;
-                    let container = $('.soal-container');
+            $('#loading-overlay span').html("Memuat soal ke-" + posisi + " dari " + jumlahSoal + " soal");
+            const data = null;
+
+            const xhr = new XMLHttpRequest();
+            xhr.withCredentials = true;
+
+            xhr.addEventListener("readystatechange", () => {
+                if (xhr.readyState === xhr.DONE) {
+                    let container = $('.soal-container .row');
                     let id = "soal-" + posisi;
                     let soalContainer = $("#" + id);
 
                     if (soalContainer.length == 0) {
-                        soalContainer = $("<div id='" + id + "'></div>");
+                        soalContainer = $('.dump .question-card').clone();
+                        soalContainer.attr('id', id);
                         container.append(soalContainer);
                     }
-                    soalContainer.html(data);
+                    let responseHTMl = $(xhr.responseText);
+                    soalContainer.find('.question-body').html(responseHTMl.find('div').first());
+                    soalContainer.find('.question-title').html("Soal no-" + posisi);
 
                     // get jawaban
-                    let answersInput = container.find("#" + id + " .icheck-indigo input");
+                    let answersInput = soalContainer.find(".icheck-indigo input");
                     const str = answersInput.first().attr("onclick");
                     const regex = /'([^']*)'/;
                     const match = str.match(regex);
@@ -101,50 +169,108 @@
 
                     for (let i = 0; i < answersInput.length; i++) {
                         let element = $(answersInput[i]);
-                        element.attr('name', element.attr('name') + "-" + posisi);
+                        let isSelected = element.attr('checked') != undefined;
+                        let letter = String.fromCharCode(65 + i);
+                        let jawaban = letter + ". " + element.parent().find('label').html();
+                        let color = isSelected ? 'text-green' : 'text-dark';
+                        let image = element.parent().find('img');
 
+                        let jawabanContainer = $(`<div class='jawaban-${letter} ${color}'></div>`);
+                        jawabanContainer.html(jawaban);
+                        element.parent().parent().append(jawabanContainer);
+                        element.parent().remove();
+
+                        if (image.length > 0) jawabanContainer.append(image);
+                        if (isSelected) soalContainer.find('.question-answers option[value="' + letter + '"]').attr('selected', '');
                     }
 
-                    if (posisi <= jumlahSoal && recursive) {
-                        showsoal(posisi, true);
+                    soalContainer.find('.question-answers').off('change').on('change', () => {
+                        let value = soalContainer.find('.question-answers').val();
+                        savejawaban(posisi, value);
+                    });
+
+                    soalContainer.find('.rekap-button').off('click').on('click', () => {
+                        rekapjawaban();
+                    });
+
+                    if (posisi < jumlahSoal && recursive) {
+                        showsoal(posisi + 1, true);
                     }
+
+                    if (posisi == jumlahSoal && recursive) {
+                        $('#loading-overlay').addClass("hide");
+                        container.removeClass('d-none');
+                    }
+                    soalContainer.find('.overlay').addClass('hide');
+                    if (posisi == jumlahSoal) soalContainer.addClass('my-0')
                 }
             });
+
+            let params = new URLSearchParams();
+            params.append('act', "UXFqU1I2djFWNHVsc2ZIRC9nVklLVUN2Qm02eWRMWWo1c3RTS2pFN3Q5WT0=");
+            params.append('dum', dum);
+            params.append('d1', idnilai);
+            params.append('d2', posisi);
+            params.append('d3', jumlahSoal);
+
+            xhr.open("GET", `${url}?${params.toString()}`);
+            xhr.send(data);
         }
 
-        function savejawaban(posisi, jawaban, recursive) {
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: {
-                    act: 'a3VCZGFsbDNBeG9va2E4azBoNitkWjlNNzZjS3BoQlhUTDJUQUt4VnBKOD0=',
-                    d1: answers[posisi - 1],
-                    d2: jawaban
-                },
-                success: function (data) {
-                    posisi++;
-                    if (recursive && posisi <= jumlahSoal) savejawaban(posisi, "A", true);
-                },
+        function savejawaban(posisi, jawaban) {
+            const data = null;
+
+            const xhr = new XMLHttpRequest();
+            xhr.withCredentials = true;
+
+            xhr.addEventListener("readystatechange", function () {
+                if (this.readyState === this.DONE) {
+                    let id = "soal-" + posisi;
+                    let soalContainer = $("#" + id);
+                    soalContainer.find('.overlay').removeClass('hide');
+                    showsoal(posisi, false);
+                }
             });
+
+            let params = new URLSearchParams();
+            params.append('act', "a3VCZGFsbDNBeG9va2E4azBoNitkWjlNNzZjS3BoQlhUTDJUQUt4VnBKOD0=");
+            params.append('dum', dum);
+            params.append('d1', answers[posisi - 1]);
+            params.append('d2', jawaban);
+            xhr.open("POST", `${url}?${params.toString()}`);
+            xhr.send(data);
         }
 
         function rekapjawaban() {
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: {
-                    act: 'OWJMQWcvcGJ4QnZOdVJjNmNJMUtXTnMwTUlGWGJsMTBpZzVXbVZZOWQrRT0=',
-                    d1: idnilai,
-                    d2: jumlahSoal
-                },
-                success: function (data) {
-                    console.log(data);
+            const data = null;
+
+            const xhr = new XMLHttpRequest();
+            xhr.withCredentials = true;
+
+            xhr.addEventListener("readystatechange", function () {
+                if (this.readyState === this.DONE) {
+                    console.log(this.responseText);
                 }
             });
-        }
 
+            let params = new URLSearchParams();
+            params.append('act', "OWJMQWcvcGJ4QnZOdVJjNmNJMUtXTnMwTUlGWGJsMTBpZzVXbVZZOWQrRT0=");
+            params.append('dum', dum);
+            params.append('d1', idnilai);
+            params.append('d2', jumlahSoal);
+            xhr.open("POST", `${url}?${params.toString()}`);
+            xhr.send(data);
+        }
         $(() => {
-            showsoal(1, true);
+            $('#form-soal-button').on('click', () => {
+                dum = $('#tokendum').val();
+                idnilai = $('#tokenpenilaian').val();
+                jumlahSoal = $('#jumlahsoal').val() * 1;
+                $('#form-soal').remove();
+                $('#loading-overlay').removeClass("hide");
+                $('.form-container').addClass('d-none');
+                showsoal(1, true);
+            })
         });
     </script>
 </body>
